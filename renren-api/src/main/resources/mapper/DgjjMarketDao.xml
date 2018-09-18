@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.dao.DgjjMarketDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.entity.DgjjMarketEntity" id="dgjjMarketMap">
+        <result property="id" column="id"/>
+        <result property="techAudit" column="tech_audit"/>
+        <result property="techNo" column="tech_no"/>
+        <result property="techName" column="tech_name"/>
+        <result property="techShareStock" column="tech_share_stock"/>
+        <result property="techAppraise" column="tech_appraise"/>
+        <result property="techQuotePrice" column="tech_quote_price"/>
+        <result property="marketIndex" column="market_index"/>
+        <result property="criticalityIndex" column="criticality_index"/>
+        <result property="totalIncome" column="total_income"/>
+        <result property="driveNumber" column="drive_number"/>
+        <result property="driveCash" column="drive_cash"/>
+        <result property="collarDriveLimit" column="collar_drive_limit"/>
+        <result property="unitIncome" column="unit_income"/>
+        <result property="transferProgress" column="transfer_progress"/>
+        <result property="techArea" column="tech_area"/>
+        <result property="coreValue" column="core_value"/>
+        <result property="techProfile" column="tech_profile"/>
+        <result property="companyName" column="company_name"/>
+        <result property="operationScope" column="operation_scope"/>
+        <result property="ifPatent" column="if_patent"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="findList" parameterType="io.renren.form.DgjjMarketForm" resultType="io.renren.dto.DgjjMarketDto">
+        select
+        	DISTINCT IFNULL(tt.user_id,'') as "userId",
+        	IFNULL(t.id,'') as "id",
+        	IFNULL(t.id,'') as "marketId",
+        	IFNULL(t.techName,'') as "techName",
+        	IFNULL(t.driveNumber,'0') as "driveNumber",
+        	IFNULL(t.driveCash,'0') as "driveCash",
+        	IFNULL(t.transferProgress,'') as "transferProgress",
+        	IFNULL(t.transferProgressText,'') as "transferProgressText",
+        	IFNULL(t.techAppraise,'') as "techAppraise",
+        	IFNULL(t.attentionId,'') as "attentionId"
+		from(
+			select
+	          a.id as "id",
+	          a.id as "marketId",
+	          a.tech_name as "techName",
+	          a.tech_area as "techArea",
+	          count(DISTINCT b.user_id) as "driveNumber",
+			  sum(IFNULL(b.drive_cash,'0')) as "driveCash",
+	          c.code as "transferProgress",
+	          c.value as "transferProgressText",
+	          a.tech_appraise as "techAppraise",
+	          a.create_time as "createTime",
+	          d.id as "attentionId"
+	        from dgjj_market a
+	        left join dgjj_cook_tech b  on a.id = b.market_id
+	        left join sys_dict c on a.transfer_progress = c.code and c.type='transfer_progress'
+	        left join dgjj_market_attention d on a.id = d.market_id
+	        <where>
+				a.tech_audit = '0'
+	        	group by a.tech_name
+       		</where>
+        ) t left join dgjj_cook_tech tt on t.id = tt.market_id 
+       	<if test="userId != '' and userId != null">
+       		and tt.user_id = #{userId}
+       	</if>
+       	<where>
+	       	<if test="techArea != '' and techArea != null">
+	       		and t.techArea = #{techArea}
+	       	</if>
+	       	<if test="techName != '' and techName != null">
+	       		and t.techName like concat('%',#{techName},'%') ;
+	       	</if>
+       	</where>
+       	GROUP BY t.marketId
+        <if test="conFlg == 0">
+        	order by driveNumber
+        </if>
+        <if test="conFlg == 1">
+        	order by driveNumber desc
+        </if>
+        <if test="cashFlg == 0">
+        	order by driveCash
+        </if>
+        <if test="cashFlg == 1">
+        	order by driveCash desc
+        </if>
+        <if test="cashFlg == '' and conFlg == ''">
+        	order by createTime desc
+        </if>
+        
+    </select>
+    
+    <select id="findMyList" parameterType="io.renren.form.DgjjMarketForm" resultType="io.renren.dto.DgjjMarketDto">
+        select
+        	DISTINCT IFNULL(tt.user_id,'') as "userId",
+        	IFNULL(t.id,'') as "id",
+        	IFNULL(t.id,'') as "marketId",
+        	IFNULL(t.techName,'') as "techName",
+        	IFNULL(t.driveNumber,'0') as "driveNumber",
+        	IFNULL(t.driveCash,'0') as "driveCash",
+        	IFNULL(tt.myDriveCash,'0') as "myDriveCash",
+        	IFNULL(t.transferProgress,'') as "transferProgress",
+        	IFNULL(t.transferProgressText,'') as "transferProgressText",
+        	IFNULL(t.techAppraise,'') as "techAppraise",
+        	IFNULL(t.attentionId,'') as "attentionId"
+		from(
+			select
+	          a.id as "id",
+	          a.id as "marketId",
+	          a.tech_name as "techName",
+	          a.tech_area as "techArea",
+	          count(DISTINCT b.user_id) as "driveNumber",
+			  sum(IFNULL(b.drive_cash,'0')) as "driveCash",
+	          c.code as "transferProgress",
+	          c.value as "transferProgressText",
+	          a.tech_appraise as "techAppraise",
+	          a.create_time as "createTime",
+	          d.id as "attentionId"
+	        from dgjj_market a
+	        left join dgjj_cook_tech b  on a.id = b.market_id
+	        left join sys_dict c on a.transfer_progress = c.code and c.type='transfer_progress'
+	        left join dgjj_market_attention d on a.id = d.market_id
+	        <where>
+				a.tech_audit = '0'
+	        	group by a.tech_name
+       		</where>
+        ) t left join 
+			(
+				select 
+					a.id,
+					b.user_id,
+					sum(IFNULL( b.drive_cash, '0' )) as "myDriveCash" 
+				from 
+					dgjj_market a
+				inner JOIN dgjj_cook_tech b ON a.id = b.market_id
+				<where>
+					a.tech_audit = '0'
+					<if test="userId != '' and userId != null">
+			       		and b.user_id = #{userId}
+			       	</if>
+		        	group by a.tech_name
+       			</where>
+       		)  tt on t.id = tt.id 
+       		<if test="userId != '' and userId != null">
+	       		and tt.user_id = #{userId}
+	       	</if>
+	    <where>
+	       	<if test="marketId != '' and marketId != null">
+	       		and t.id = #{marketId}
+	       	</if>
+	       	<if test="techArea != '' and techArea != null">
+	       		and t.techArea = #{techArea}
+	       	</if>
+	       	<if test="techName != '' and techName != null">
+	       		and t.techName like concat('%',#{techName},'%') ;
+	       	</if>
+  		</where>
+        <if test="conFlg == 0">
+        	order by driveNumber
+        </if>
+        <if test="conFlg == 1">
+        	order by driveNumber desc
+        </if>
+        <if test="cashFlg == 0">
+        	order by driveCash
+        </if>
+        <if test="cashFlg == 1">
+        	order by driveCash desc
+        </if>
+        <if test="cashFlg == '' and conFlg == ''">
+        	order by createTime desc
+        </if>
+    </select>
+    
+    <!-- 我炒的技术详情 -->
+    <select id="findMyDetailList" parameterType="io.renren.form.DgjjMarketForm" resultType="io.renren.dto.DgjjMarketDetailDto">
+        select
+        	DISTINCT IFNULL(tt.user_id,'') as "userId",
+        	IFNULL(t.id,'') as "id",
+        	IFNULL(t.id,'') as "marketId",
+        	IFNULL(t.techName,'') as "techName",
+        	IFNULL(t.driveNumber,'0') as "driveNumber",
+        	IFNULL(t.driveCash,'0') as "driveCash",
+        	IFNULL(tt.myDriveCash,'0') as "myDriveCash",
+        	IFNULL(t.collarDriveLimit,'0') as "collarDriveLimit",
+        	IFNULL(t.transferProgress,'') as "transferProgress",
+        	IFNULL(t.transferProgressText,'') as "transferProgressText",
+        	IFNULL(t.techAppraise,'') as "techAppraise",
+        	IFNULL(t.techArea,'') as "techArea",
+        	IFNULL(t.techAreaText,'') as "techAreaText",
+        	IFNULL(t.techProfile,'') as "techProfile",
+        	IFNULL(t.coreValue,'') as "coreValue",
+        	IFNULL(t.companyName,'') as "companyName",
+        	IFNULL(t.operationScope,'') as "operationScope",
+        	IFNULL(t.ifPatent,'') as "ifPatent",
+        	IFNULL(t.attentionId,'') as "attentionId"
+		from(
+			select
+	          a.id as "id",
+	          a.id as "marketId",
+	          a.tech_name as "techName",
+	          e.code as "techArea",
+	          e.value as "techAreaText",
+	          a.tech_profile as "techProfile",
+	          a.core_value as "coreValue",
+	          a.company_name as "companyName",
+	          a.operation_scope as "operationScope",
+	          a.if_patent as "ifPatent",
+	          count(DISTINCT b.user_id) as "driveNumber",
+			  sum(IFNULL(b.drive_cash,'0')) as "driveCash",
+			  IFNULL(Max(b.drive_cash+0),'0') as "collarDriveLimit",
+	          c.code as "transferProgress",
+	          c.value as "transferProgressText",
+	          a.tech_appraise as "techAppraise",
+	          a.create_time as "createTime",
+	          d.id as "attentionId"
+	        from dgjj_market a
+	        left join dgjj_cook_tech b  on a.id = b.market_id
+	        left join sys_dict c on a.transfer_progress = c.code and c.type='transfer_progress'
+	        left join dgjj_market_attention d on a.id = d.market_id
+	        left join sys_dict e on a.tech_area = e.code and e.type='tech_area'
+	        <where>
+				a.tech_audit = '0'
+	        	group by a.tech_name
+       		</where>
+        ) t left join 
+			(
+				select 
+					a.id,
+					b.user_id,
+					sum(IFNULL( b.drive_cash, '0' )) as "myDriveCash" 
+				from 
+					dgjj_market a
+				inner JOIN dgjj_cook_tech b ON a.id = b.market_id
+				<where>
+					a.tech_audit = '0'
+					<if test="userId != '' and userId != null">
+			       		and b.user_id = #{userId}
+			       	</if>
+		        	group by a.tech_name
+       			</where>
+       		)  tt on t.id = tt.id 
+       		<if test="userId != '' and userId != null">
+	       		and tt.user_id = #{userId}
+	       	</if>
+	    <where>
+	       	<if test="marketId != '' and marketId != null">
+	       		and t.id = #{marketId}
+	       	</if>
+  		</where>
+        <if test="conFlg == 0">
+        	order by driveNumber
+        </if>
+        <if test="conFlg == 1">
+        	order by driveNumber desc
+        </if>
+        <if test="cashFlg == 0">
+        	order by driveCash
+        </if>
+        <if test="cashFlg == 1">
+        	order by driveCash desc
+        </if>
+        <if test="cashFlg == '' and conFlg == ''">
+        	order by createTime desc
+        </if>
+    </select>
+</mapper>

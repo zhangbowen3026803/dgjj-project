@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>大国技术交易平台</title>
+	<meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<title>大国技术交易平台</title>
+  	<!-- Tell the browser to be responsive to screen width -->
+  	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  	<link rel="stylesheet" href="${request.contextPath}/statics/css/login2.css">
+<style>
+body{height:100%;background:#1f487c;overflow:hidden;}
+canvas{z-index:-1;position:absolute;}
+</style>
+<script src="${request.contextPath}/statics/libs/jquery.min.js"></script>
+<script src="${request.contextPath}/statics/js/verificationNumbers.js" tppabs="${request.contextPath}/statics/js/verificationNumbers.js"></script>
+<script src="${request.contextPath}/statics/js/Particleground.js" tppabs="${request.contextPath}/statics/js/Particleground.js"></script>
+<script src="${request.contextPath}/statics/libs/vue.min.js"></script>
+<script>
+$(document).ready(function() {
+  //粒子背景特效
+  $('body').particleground({
+    dotColor: '#5cbdaa',
+    lineColor: '#5cbdaa'
+  });
+  //验证码
+  createCode();
+});
+</script>
+</head>
+<body>
+<dl class="admin_login" id="rrapp" v-cloak>
+ <dt>
+  <strong>大国技术交易平台</strong>
+  <em>Management System</em>
+ </dt>
+ <div v-if="error" class="alert alert-danger alert-dismissible">
+        <h4 style="margin-bottom: 0px;"><i class="fa fa-exclamation-triangle"></i> {{errorMsg}}</h4>
+      </div>
+ <dd class="user_icon">
+  <input type="text" class="form-control" placeholder="账号" v-model="username" class="login_txtbx"/>
+ </dd>
+ <dd class="pwd_icon">
+  <input type="password" class="form-control" placeholder="密码" v-model="password" class="login_txtbx"/>
+ </dd>
+ <dd class="val_icon">
+  <div class="checkcode">
+    <input type="text" class="form-control" placeholder="验证码" maxlength="4" v-model="captcha" @keyup.enter="login" class="login_txtbx">
+    <span class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+    <!--<canvas class="J_codeimg" id="myCanvas" :src="src" @click="refreshCode">对不起，您的浏览器不支持canvas，请下载最新版浏览器!</canvas>  -->
+  </div>
+  <div class="form-group has-feedback">
+        <img alt="如果看不清楚，请单击图片刷新！" class="pointer" :src="src" @click="refreshCode">
+        &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="refreshCode">点击刷新</a>
+      </div>
+ </dd>
+ <dd style="margin-top:15px;">
+  <button type="button" value="立即登陆" @click="login" class="submit_btn"/>
+ </dd>
+ <dd>
+  <p>© 2015-2016 jq22 版权所有</p>
+  <p>陕B2-8998988-1</p>
+ </dd>
+</dl>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#rrapp',
+	data:{
+		username: '',
+		password: '',
+		captcha: '',
+		error: false,
+		errorMsg: '',
+		src: 'captcha.jpg'
+	},
+	beforeCreate: function(){
+		if(self != top){
+			top.location.href = self.location.href;
+		}
+	},
+	methods: {
+		refreshCode: function(){
+			this.src = "captcha.jpg?t=" + $.now();
+		},
+		login: function (event) {
+			var data = "username="+vm.username+"&password="+vm.password+"&captcha="+vm.captcha;
+			$.ajax({
+				type: "POST",
+			    url: "sys/login",
+			    data: data,
+			    dataType: "json",
+			    success: function(result){
+					if(result.code == 0){//登录成功
+						parent.location.href ='index.html';
+					}else{
+						vm.error = true;
+						vm.errorMsg = result.msg;
+						
+						vm.refreshCode();
+					}
+				}
+			});
+		}
+	}
+});
+</script>
+</body>
+</html>

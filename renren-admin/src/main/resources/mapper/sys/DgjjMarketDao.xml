@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.DgjjMarketDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.DgjjMarketEntity" id="dgjjMarketMap">
+        <result property="id" column="id"/>
+        <result property="techAudit" column="tech_audit"/>
+        <result property="techNo" column="tech_no"/>
+        <result property="techName" column="tech_name"/>
+        <result property="techShareStock" column="tech_share_stock"/>
+        <result property="techAppraise" column="tech_appraise"/>
+        <result property="techQuotePrice" column="tech_quote_price"/>
+        <result property="marketIndex" column="market_index"/>
+        <result property="criticalityIndex" column="criticality_index"/>
+        <result property="totalIncome" column="total_income"/>
+        <result property="driveNumber" column="drive_number"/>
+        <result property="driveCash" column="drive_cash"/>
+        <result property="collarDriveLimit" column="collar_drive_limit"/>
+        <result property="unitIncome" column="unit_income"/>
+        <result property="transferProgress" column="transfer_progress"/>
+        <result property="techArea" column="tech_area"/>
+        <result property="coreValue" column="core_value"/>
+        <result property="techProfile" column="tech_profile"/>
+        <result property="companyName" column="company_name"/>
+        <result property="operationScope" column="operation_scope"/>
+        <result property="ifPatent" column="if_patent"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+</mapper>

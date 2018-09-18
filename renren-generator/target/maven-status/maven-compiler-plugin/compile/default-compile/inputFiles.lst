@@ -1,0 +1,13 @@
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/GeneratorApplication.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/dao/SysGeneratorDao.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/entity/TableEntity.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/Query.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/DateUtils.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/PageUtils.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/service/SysGeneratorService.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/entity/ColumnEntity.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/RRException.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/controller/SysGeneratorController.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/RRExceptionHandler.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/R.java
+/Users/zhangbowen3026803/git/wyw-framework/renren-security/renren-generator/src/main/java/io/renren/utils/GenUtils.java
